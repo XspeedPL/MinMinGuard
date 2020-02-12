@@ -2,7 +2,6 @@ package tw.fatminmin.xposed.minminguard.ui.adapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
@@ -16,19 +15,12 @@ import android.widget.Switch;
 import android.widget.TextView;
 import tw.fatminmin.xposed.minminguard.Common;
 import tw.fatminmin.xposed.minminguard.R;
-import tw.fatminmin.xposed.minminguard.orm.AppData;
-import tw.fatminmin.xposed.minminguard.orm.AppDataDao;
-import tw.fatminmin.xposed.minminguard.orm.DaoMaster;
-import tw.fatminmin.xposed.minminguard.orm.DaoSession;
 import tw.fatminmin.xposed.minminguard.ui.UIUtils;
 import tw.fatminmin.xposed.minminguard.ui.dialog.AppDetailDialogFragment;
 import tw.fatminmin.xposed.minminguard.ui.fragments.MainFragment;
 import tw.fatminmin.xposed.minminguard.ui.models.AppDetails;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by fatminmin on 2015/10/1.
@@ -38,18 +30,11 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder>
 
     private final Context mContext;
     private final SharedPreferences mPref;
-    private final DaoMaster.DevOpenHelper helper;
-    private final SQLiteDatabase db;
-    private final DaoMaster daoMaster;
-    private final DaoSession daoSession;
-    private final AppDataDao appDataDao;
     private ArrayList<AppDetails> appList;
-    private Map<String, AppData> mAppDataMap; // retrieved AppData from sqlite
     private MainFragment.FragmentMode mMode;
 
     public AppsAdapter(Context context, ArrayList<AppDetails> list, MainFragment.FragmentMode mode)
     {
-        super();
         mContext = context;
         appList = list;
 
@@ -57,39 +42,12 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder>
         if (ctx == null) ctx = context;
 
         mPref = ctx.getSharedPreferences(Common.MOD_PREFS, Context.MODE_PRIVATE);
-
-        helper = new DaoMaster.DevOpenHelper(context, "mmg", null);
-        db = helper.getWritableDatabase();
-        daoMaster = new DaoMaster(db);
-        daoSession = daoMaster.newSession();
-        appDataDao = daoSession.getAppDataDao();
-
         mMode = mode;
-
-        mAppDataMap = new HashMap<>();
     }
 
     public void setAppList(ArrayList<AppDetails> list)
     {
         appList = list;
-
-        /* update appdata map */
-        mAppDataMap.clear();
-        for (AppDetails info : appList)
-        {
-            final String pkgName = info.getPackageName();
-            AppData appData = null;
-
-            List<AppData> results = appDataDao.queryBuilder().where(AppDataDao.Properties.PkgName.eq(pkgName)).list();
-
-            if (results.size() == 1)
-            {
-                appData = results.get(0);
-                appDataDao.refresh(appData);
-            }
-
-            mAppDataMap.put(pkgName, appData);
-        }
     }
 
     @Override
@@ -122,19 +80,9 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder>
     @Override
     public void onBindViewHolder(ViewHolder holder, int position)
     {
-
         final AppDetails currentAppDetails = appList.get(position);
 
-        final AppData appData = mAppDataMap.get(currentAppDetails.getPackageName());
-        if (appData != null && appData.getBlockNum() != 0)
-        {
-            holder.txtBlockNum.setText(mContext.getString(R.string.msg_block_num, appData.getBlockNum()));
-        }
-        else
-        {
-            holder.txtBlockNum.setText("");
-        }
-
+        holder.txtBlockNum.setText("");
         holder.imgAppIcon.setImageDrawable(currentAppDetails.getIcon());
         holder.txtAppName.setText(currentAppDetails.getName());
 
@@ -163,7 +111,7 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder>
             @Override
             public void onClick(View v)
             {
-                DialogFragment dialog = AppDetailDialogFragment.newInstance(currentAppDetails.getName(), currentAppDetails.getPackageName(), appData);
+                DialogFragment dialog = AppDetailDialogFragment.newInstance(currentAppDetails.getName(), currentAppDetails.getPackageName());
                 AppCompatActivity activity = (AppCompatActivity) mContext;
                 dialog.show(activity.getSupportFragmentManager(), "dialog");
             }

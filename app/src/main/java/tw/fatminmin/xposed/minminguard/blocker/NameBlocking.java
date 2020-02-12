@@ -38,15 +38,12 @@ public final class NameBlocking
 
         for (Blocker blocker : Main.blockers)
         {
-            String name = blocker.getClass().getSimpleName();
             String banner = blocker.getBanner();
             String bannerPrefix = blocker.getBannerPrefix();
 
             // prefix is used to detect adview obfuscate by proguard
             if (matchBannerName(clazzName, banner, bannerPrefix))
             {
-                Util.notifyAdNetwork(context, pkgName, name);
-
                 return true;
             }
         }

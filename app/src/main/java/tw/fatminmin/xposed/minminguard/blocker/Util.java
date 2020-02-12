@@ -35,22 +35,6 @@ public final class Util
         return false;
     }
 
-    public static String getAppVersion(Context context)
-    {
-        String version = null;
-        PackageManager pm = context.getPackageManager();
-
-        try
-        {
-            version = pm.getPackageInfo(PACKAGE, 0).versionName;
-        }
-        catch (PackageManager.NameNotFoundException e)
-        {
-        }
-
-        return version;
-    }
-
     public static void log(String packageName, String msg)
     {
         if (DEBUG)
@@ -72,85 +56,6 @@ public final class Util
         }
 
         return null;
-    }
-
-    public static void saveLog(final File dest, final Context context, final Handler handler)
-    {
-        handler.post(new Runnable()
-        {
-
-            @Override
-            public void run()
-            {
-                try
-                {
-
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
-    public static void notifyAdNetwork(final Context context, final String pkgName, final String adNetwork)
-    {
-        new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    ContentResolver resolver = context.getContentResolver();
-                    Uri uri = Uri.parse("content://tw.fatminmin.xposed.minminguard/");
-                    ContentValues values = new ContentValues();
-
-                    values.put(Common.KEY_PKG_NAME, pkgName);
-                    values.put(Common.KEY_NETWORK, adNetwork);
-                    resolver.update(uri, values, null, null);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
-    public static void notifyRemoveAdView(final Context context, final String pkgName, final int blockNum)
-    {
-        final Context mContext;
-
-        if (context == null)
-            mContext = getCurrentApplication();
-        else
-            mContext = context;
-
-        Runnable task = new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    ContentResolver resolver = mContext.getContentResolver();
-                    Uri uri = Uri.parse("content://tw.fatminmin.xposed.minminguard/");
-                    ContentValues values = new ContentValues();
-
-                    values.put(Common.KEY_PKG_NAME, pkgName);
-                    values.put(Common.KEY_BLOCK_NUM, blockNum);
-                    resolver.update(uri, values, null, null);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        };
-
-        Main.notifyWorker.submit(task);
     }
 
     public static void hookAllMethods(String className, ClassLoader classLoader, String method, XC_MethodHook callBack)

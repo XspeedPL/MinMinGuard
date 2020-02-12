@@ -30,8 +30,7 @@ public final class Viafree
             @Override
             protected void beforeHookedMethod(MethodHookParam param)
             {
-                param.setResult(new ArrayList<Object>());
-                Util.notifyRemoveAdView(null, packageName, 1);
+                param.setResult(new ArrayList<>(0));
             }
         });
 

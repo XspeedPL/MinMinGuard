@@ -16,19 +16,11 @@ public final class ApiBlocking
 
     public static void handle(final String packageName, final XC_LoadPackage.LoadPackageParam lpparam, final XC_MethodHook.MethodHookParam param)
     {
-        Context context = (Context) (param.thisObject);
-
         for (Blocker blocker : Main.blockers)
         {
             try
             {
-                String name = blocker.getClass().getSimpleName();
-                boolean result = blocker.handleLoadPackage(packageName, lpparam);
-
-                if (result)
-                {
-                    Util.notifyAdNetwork(context, packageName, name);
-                }
+                blocker.handleLoadPackage(packageName, lpparam);
             }
             catch (Exception e)
             {
@@ -92,7 +84,6 @@ public final class ApiBlocking
                     String debugMsg = String.format("blockAdFunction: Detect %s %s in %s", adClass, adFunc, packageName);
 
                     Util.log(packageName, debugMsg);
-                    Util.notifyRemoveAdView(null, packageName, 1);
 
                     param.setResult(new Object());
                 }
@@ -124,8 +115,6 @@ public final class ApiBlocking
 
                     Util.log(packageName, debugMsg);
 
-                    Util.notifyRemoveAdView(null, packageName, 1);
-
                     param.setResult(new Object());
                 }
             });
@@ -155,8 +144,6 @@ public final class ApiBlocking
                     String debugMsg = String.format("Detect %s %s(%s, %s) in %s", adClass, adFunc, parameter1.toString(), parameter2.toString(), packageName);
 
                     Util.log(packageName, debugMsg);
-
-                    Util.notifyRemoveAdView(null, packageName, 1);
 
                     param.setResult(new Object());
                 }
@@ -188,8 +175,6 @@ public final class ApiBlocking
 
                     Util.log(packageName, debugMsg);
 
-                    Util.notifyRemoveAdView(null, packageName, 1);
-
                     param.setResult(new Object());
                 }
             });
@@ -220,8 +205,6 @@ public final class ApiBlocking
                     String debugMsg = String.format("blockAdFunctionWithResult: Detect %s %s in %s", adClass, adFunc, packageName);
 
                     Util.log(packageName, debugMsg);
-
-                    Util.notifyRemoveAdView(null, packageName, 1);
 
                     param.setResult(result);
                 }
@@ -255,8 +238,6 @@ public final class ApiBlocking
 
                     Util.log(packageName, debugMsg);
 
-                    Util.notifyRemoveAdView(null, packageName, 1);
-
                     param.setResult(result);
                 }
             });
@@ -288,8 +269,6 @@ public final class ApiBlocking
                     String debugMsg = String.format("Detect %s %s(%s, %s) in %s", adClass, adFunc, parameter1.toString(), parameter2.toString(), packageName);
 
                     Util.log(packageName, debugMsg);
-
-                    Util.notifyRemoveAdView(null, packageName, 1);
 
                     param.setResult(result);
                 }

@@ -61,9 +61,6 @@ public class MainActivity extends AppCompatActivity
                 case R.id.action_settings:
                     SettingsDialogFragment.newInstance().show(getSupportFragmentManager(), "dialog");
                     break;
-                case R.id.action_tutorial:
-                    showIntro();
-                    break;
                 case R.id.action_donate:
                     Intent it = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=47GXTVHUB4LYS"));
                     startActivity(it);
@@ -123,7 +120,6 @@ public class MainActivity extends AppCompatActivity
         if (uiPref.getBoolean(Common.KEY_FIRST_TIME, true))
         {
             uiPref.edit().putBoolean(Common.KEY_FIRST_TIME, false).apply();
-            showIntro();
         }
 
         setContentView(R.layout.activity_main);
@@ -273,17 +269,10 @@ public class MainActivity extends AppCompatActivity
         return (MainFragment) mAdapter.getItem(mViewPager.getCurrentItem());
     }
 
-    private void showIntro()
-    {
-        Intent intent = new Intent(this, MinMinGuardIntro.class);
-        startActivity(intent);
-    }
-
     public void refresh(final boolean displayProgressDialog)
     {
         new AsyncTask<Void, Void, Void>()
         {
-
             @Override
             protected void onPreExecute()
             {

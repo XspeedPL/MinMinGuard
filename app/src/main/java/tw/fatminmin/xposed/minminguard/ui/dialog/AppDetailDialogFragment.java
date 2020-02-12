@@ -17,7 +17,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import tw.fatminmin.xposed.minminguard.Common;
 import tw.fatminmin.xposed.minminguard.R;
-import tw.fatminmin.xposed.minminguard.orm.AppData;
 
 /**
  * Created by fatminmin on 2015/10/25.
@@ -39,16 +38,11 @@ public class AppDetailDialogFragment extends DialogFragment
 
     private SharedPreferences mPref;
 
-    public static AppDetailDialogFragment newInstance(String appName, String pkgName, AppData appData)
+    public static AppDetailDialogFragment newInstance(String appName, String pkgName)
     {
         Bundle args = new Bundle();
         args.putString("appName", appName);
         args.putString("pkgName", pkgName);
-        if (appData != null)
-        {
-            args.putString("adNetworks", appData.getAdNetworks());
-            args.putInt("blockNum", appData.getBlockNum());
-        }
 
         AppDetailDialogFragment fragment = new AppDetailDialogFragment();
         fragment.setArguments(args);
